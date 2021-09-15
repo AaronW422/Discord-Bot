@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -6,16 +7,49 @@ module.exports = {
     .setName('monster')
     .setDescription('Return a description of the monster.')
     .addStringOption((option) =>
-      option.setName('input').setDescription('Name of a monster')
+      option.setName('name').setDescription('Name of a monster')
     ),
   async execute(interaction) {
-    const input = interaction.options.getString('input');
-    console.log(input);
-    if (input) {
+    const name = interaction.options.getString('name');
+    if (name) {
       const res = await axios.get(
-        `https://mhw-db.com/monsters?q={"name":"${input}"}`
+        `https://mhw-db.com/monsters?q={"name":"${name}"}`
       );
-      return interaction.reply(res.data[0].name);
+      if (res.data.length) {
+        const monster = res.data[0];
+        const weaknessArray = monster.weaknesses
+          .filter((weakness) => weakness.stars >= 2)
+          .map((weakness) => `${weakness.element.charAt(0).toUpperCase() + weakness.element.slice(1)}: ${weakness.stars} ⭐`);
+        const locationsArray = monster.locations.map(
+          (location) => location.name
+        );
+        const monsterEmbed = new MessageEmbed()
+          .setColor('#0099ff')
+          .setTitle(monster.name)
+          .setDescription(monster.description)
+          .setURL(
+            `https://monsterhunterworld.wiki.fextralife.com/${monster.name}`
+          )
+          .setThumbnail(
+            `https://monsterhunterworld.wiki.fextralife.com/file/Monster-Hunter-World/mhw-${monster.name.toLowerCase()}_icon.png`
+          )
+          .addFields(
+            {
+              name: 'Locations',
+              value: locationsArray.join('\n'),
+              inline: true,
+            },
+            {
+              name: 'Weaknesses',
+              value: weaknessArray.join('\n'),
+              inline: true,
+            }
+          );
+        return interaction.reply({ embeds: [monsterEmbed] });
+      }
+      return interaction.reply(
+        'No monster found. Please check the spelling of the name!'
+      );
     }
     return interaction.reply('Please enter the name of a monster!');
   },
