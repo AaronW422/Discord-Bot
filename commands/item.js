@@ -26,6 +26,12 @@ module.exports = {
               .split(' ')
               .join('+')}`
           )
+          .setThumbnail(
+            `https://monsterhunterworld.wiki.fextralife.com/file/Monster-Hunter-World/item_${item.name
+              .toLowerCase()
+              .split(' ')
+              .join('_')}.png`
+          )
           .addFields(
             {
               name: 'Rarity',
