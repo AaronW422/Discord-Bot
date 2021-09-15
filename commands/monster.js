@@ -19,7 +19,13 @@ module.exports = {
         const monster = res.data[0];
         const weaknessArray = monster.weaknesses
           .filter((weakness) => weakness.stars >= 2)
-          .map((weakness) => `${weakness.element.charAt(0).toUpperCase() + weakness.element.slice(1)}: ${weakness.stars} ⭐`);
+          .map(
+            (weakness) =>
+              `${
+                weakness.element.charAt(0).toUpperCase() +
+                weakness.element.slice(1)
+              }: ${weakness.stars} ★`
+          );
         const locationsArray = monster.locations.map(
           (location) => location.name
         );
@@ -28,10 +34,15 @@ module.exports = {
           .setTitle(monster.name)
           .setDescription(monster.description)
           .setURL(
-            `https://monsterhunterworld.wiki.fextralife.com/${monster.name}`
+            `https://monsterhunterworld.wiki.fextralife.com/${monster.name
+              .split(' ')
+              .join('+')}`
           )
           .setThumbnail(
-            `https://monsterhunterworld.wiki.fextralife.com/file/Monster-Hunter-World/mhw-${monster.name.toLowerCase()}_icon.png`
+            `https://monsterhunterworld.wiki.fextralife.com/file/Monster-Hunter-World/mhw-${monster.name
+              .toLowerCase()
+              .split(' ')
+              .join('_')}_icon.png`
           )
           .addFields(
             {
