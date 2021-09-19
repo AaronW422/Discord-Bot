@@ -1,6 +1,9 @@
-const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const {
+  getMonsterHunterDatabaseAxios,
+  generateMonsterHunterWikiURL,
+} = require('../util/generateMonsterHunterURLs');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,9 +15,7 @@ module.exports = {
   async execute(interaction) {
     const name = interaction.options.getString('name');
     if (name) {
-      const res = await axios.get(
-        `https://mhw-db.com/monsters?q={"name":"${name}"}`
-      );
+      const res = await getMonsterHunterDatabaseAxios('monsters', 'name', name);
       if (res.data.length) {
         const monster = res.data[0];
         const weaknessArray = monster.weaknesses
@@ -33,17 +34,8 @@ module.exports = {
           .setColor('#0099ff')
           .setTitle(monster.name)
           .setDescription(monster.description)
-          .setURL(
-            `https://monsterhunterworld.wiki.fextralife.com/${monster.name
-              .split(' ')
-              .join('+')}`
-          )
-          .setThumbnail(
-            `https://monsterhunterworld.wiki.fextralife.com/file/Monster-Hunter-World/mhw-${monster.name
-              .toLowerCase()
-              .split(' ')
-              .join('_')}_icon.png`
-          )
+          .setURL(generateMonsterHunterWikiURL('page', monster.name))
+          .setThumbnail(generateMonsterHunterWikiURL('monster-thumbnail', monster.name))
           .addFields(
             {
               name: 'Locations',

@@ -1,6 +1,10 @@
 const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const {
+  getMonsterHunterDatabaseAxios,
+  generateMonsterHunterWikiURL,
+} = require('../util/generateMonsterHunterURLs');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,25 +16,16 @@ module.exports = {
   async execute(interaction) {
     const name = interaction.options.getString('name');
     if (name) {
-      const res = await axios.get(
-        `https://mhw-db.com/items?q={"name":"${name}"}`
-      );
+      const res = await getMonsterHunterDatabaseAxios('items', 'name', name);
       if (res.data.length) {
         const item = res.data[0];
         const itemEmbed = new MessageEmbed()
           .setColor('#0099ff')
           .setTitle(item.name)
           .setDescription(item.description)
-          .setURL(
-            `https://monsterhunterworld.wiki.fextralife.com/${item.name
-              .split(' ')
-              .join('+')}`
-          )
+          .setURL(generateMonsterHunterWikiURL('page', item.name))
           .setThumbnail(
-            `https://monsterhunterworld.wiki.fextralife.com/file/Monster-Hunter-World/item_${item.name
-              .toLowerCase()
-              .split(' ')
-              .join('_')}.png`
+            generateMonsterHunterWikiURL('item-thumbnail', item.name)
           )
           .addFields(
             {
