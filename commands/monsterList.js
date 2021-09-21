@@ -9,8 +9,12 @@ module.exports = {
     .setName('monster-list')
     .setDescription('Return a list of all large monsters (Iceborne).'),
   async execute(interaction) {
-    const res = await getMonsterHunterDatabaseAxios('monsters', 'type', 'large');
-    const monsterList = res.data.map((monster) => monster.name);
+    const { data } = await getMonsterHunterDatabaseAxios(
+      'monsters',
+      'type',
+      'large'
+    );
+    const monsterList = data.map((monster) => monster.name);
 
     const monsterListEmbed = new MessageEmbed()
       .setColor('#0099ff')

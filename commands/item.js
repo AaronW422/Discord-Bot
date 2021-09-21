@@ -1,4 +1,3 @@
-const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
@@ -16,9 +15,13 @@ module.exports = {
   async execute(interaction) {
     const name = interaction.options.getString('name');
     if (name) {
-      const res = await getMonsterHunterDatabaseAxios('items', 'name', name);
-      if (res.data.length) {
-        const item = res.data[0];
+      const { data } = await getMonsterHunterDatabaseAxios(
+        'items',
+        'name',
+        name
+      );
+      if (data.length) {
+        const item = data[0];
         const itemEmbed = new MessageEmbed()
           .setColor('#0099ff')
           .setTitle(item.name)
