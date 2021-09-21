@@ -29,5 +29,5 @@ Run `npm start` or `yarn start` to get the bot going.
 
 ## Credits
 
-[Monster Hunter World Database API](https://docs.mhw-db.com/)
+[Monster Hunter World Database API](https://docs.mhw-db.com/)  
 [Monster Hunter World Fextralife Wiki](https://monsterhunterworld.wiki.fextralife.com/Monster+Hunter+World+Wiki)
